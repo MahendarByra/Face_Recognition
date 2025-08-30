@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Chef Face Authorization</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg: #0f172a; --panel:#111827; --muted:#94a3b8; --card:#0b1220; --accent:#22c55e; --text:#e5e7eb; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system; background: var(--bg); color: var(--text); }
+    .layout { display:flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: var(--panel); padding: 24px; box-shadow: inset -1px 0 0 rgba(255,255,255,0.05); }
+    .brand { font-weight:700; font-size: 1.2rem; margin-bottom: 16px; }
+    .menu a { display:block; padding: 10px 12px; border-radius: 10px; color: var(--text); text-decoration:none; margin-bottom: 8px; }
+    .menu a.active, .menu a:hover { background: #1f2937; }
+    .content { flex:1; padding: 28px; max-width: 1000px; }
+    .card { background: var(--card); border:1px solid #1f2937; border-radius: 16px; padding: 20px; }
+    .btn { padding: 10px 16px; border-radius: 10px; border:0; cursor:pointer; }
+    .btn-primary { background: var(--accent); color: #0b0f19; font-weight: 600; }
+    .field { margin-bottom: 14px; }
+    label { display:block; margin-bottom:6px; color: var(--muted); }
+    input[type="text"], input[type="file"] { width:100%; padding:10px; border-radius:10px; border:1px solid #1f2937; background:#0a1220; color: var(--text); }
+    .row { display:flex; gap:16px; flex-wrap: wrap; }
+    .w-1-2 { flex: 1 1 320px; }
+    .muted { color: var(--muted); }
+    .video { width: 100%; background: black; border-radius: 14px; }
+    .preview { max-width: 240px; border-radius: 12px; border:1px solid #1f2937; }
+    .status { margin-top:10px; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">👨‍🍳 Chef Face Authorization</div>
+      <nav class="menu">
+        <a href="{{ url_for('home') }}" class="{% if request.endpoint=='home' %}active{% endif %}">Home</a>
+        <a href="{{ url_for('register_page') }}" class="{% if request.endpoint=='register_page' %}active{% endif %}">Register</a>
+        <a href="{{ url_for('authorize_page') }}" class="{% if request.endpoint=='authorize_page' %}active{% endif %}">Authorize</a>
+      </nav>
+    </aside>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

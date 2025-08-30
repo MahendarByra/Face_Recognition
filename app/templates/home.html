@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h1 style="margin:0 0 10px 0;">Home</h1>
+    <p class="muted">
+      Hello Chef, Please follow video authorize yourself to go to Dashboard.
+      If you are new please Register.
+    </p>
+    <div class="row" style="margin-top:16px;">
+      <a class="btn btn-primary" href="{{ url_for('register_page') }}">Go to Register</a>
+      <a class="btn btn-primary" href="{{ url_for('authorize_page') }}">Go to Authorize</a>
+    </div>
+  </div>
+{% endblock %}

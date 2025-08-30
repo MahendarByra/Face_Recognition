@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script defer src="{{ url_for('static', filename='js/register.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h1 style="margin:0 0 16px 0;">Register</h1>
+
+    <!-- Display message if present -->
+    {% if request.args.get('message') %}
+      <div class="alert alert-danger" style="margin-bottom:16px;">
+          {{ request.args.get('message') }}
+      </div>
+    {% endif %}
+
+    <!-- 🔥 Added action + method + enctype -->
+    <form id="register-form" action="/api/register" method="POST" enctype="multipart/form-data">
+      <div class="row">
+        <div class="w-1-2">
+          <div class="field">
+            <label for="first_name">First name</label>
+            <input type="text" id="first_name" name="first_name" required />
+          </div>
+        </div>
+        <div class="w-1-2">
+          <div class="field">
+            <label for="last_name">Last name</label>
+            <input type="text" id="last_name" name="last_name" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- Toggle Switch -->
+      <div class="row" style="margin:16px 0;">
+        <label style="margin-right:20px;">
+          <input type="radio" name="inputMode" value="upload" checked> Upload Image
+        </label>
+        <label>
+          <input type="radio" name="inputMode" value="camera"> Use Camera
+        </label>
+      </div>
+
+      <!-- Upload Section -->
+      <div id="uploadSection">
+        <div class="row">
+          <div class="w-1-2">
+            <div class="field">
+              <label>Upload Image</label>
+              <input type="file" id="image" name="image" accept="image/*" />
+            </div>
+            <img id="upload-preview" class="preview" style="display:none;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Camera Section -->
+      <div id="cameraSection" style="display:none;">
+        <div class="row">
+          <div class="w-1-2">
+            <div class="field">
+              <label>Capture with Camera</label>
+              <video id="camera" class="video" autoplay playsinline></video>
+              <div class="row" style="margin-top:10px;">
+                <button class="btn" type="button" id="startCam">Start Camera</button>
+                <button class="btn" type="button" id="capture">Capture</button>
+              </div>
+              <canvas id="canvas" style="display:none;"></canvas>
+              <img id="capture-preview" class="preview" style="display:none; margin-top:10px;" />
+              <!-- hidden input for captured base64 -->
+              <input type="hidden" id="image_data" name="image_data" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <button class="btn btn-primary" type="submit">Register</button>
+      </div>
+      <div id="status" class="status muted"></div>
+    </form>
+  </div>
+
+  <script>
+    const uploadSection = document.getElementById("uploadSection");
+    const cameraSection = document.getElementById("cameraSection");
+    const video = document.getElementById("camera");
+    const canvas = document.getElementById("canvas");
+    const capturePreview = document.getElementById("capture-preview");
+    const imageDataInput = document.getElementById("image_data");
+
+    let stream = null; // global stream variable
+
+    // Toggle logic
+    document.querySelectorAll('input[name="inputMode"]').forEach(radio => {
+      radio.addEventListener("change", e => {
+        if (e.target.value === "upload") {
+          uploadSection.style.display = "block";
+          cameraSection.style.display = "none";
+          stopCamera();
+          capturePreview.style.display = "none";
+          imageDataInput.value = "";
+        } else {
+          uploadSection.style.display = "none";
+          cameraSection.style.display = "block";
+          // Camera won't auto-start
+        }
+      });
+    });
+
+    // Start camera button
+    document.getElementById("startCam").addEventListener("click", startCamera);
+
+    // Capture button
+    document.getElementById("capture").addEventListener("click", () => {
+      if (!stream) {
+        alert("Camera not started!");
+        return;
+      }
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const dataURL = canvas.toDataURL("image/jpeg");
+      imageDataInput.value = dataURL;
+
+      capturePreview.src = dataURL;
+      capturePreview.style.display = "block";
+    });
+
+    // Start camera function
+    function startCamera() {
+      if (stream) stopCamera();
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(s => {
+          stream = s;
+          video.srcObject = stream;
+        })
+        .catch(err => alert("Camera access denied: " + err));
+    }
+
+    // Stop camera function
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        video.srcObject = null;
+      }
+    }
+  </script>
+
+{% endblock %}

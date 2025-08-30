@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block head %}
+<script defer src="{{ url_for('static', filename='js/authorize.js') }}"></script>
+{% endblock %}
+{% block content %}
+  <div class="card">
+    <h1 style="margin:0 0 16px 0;">Authorize</h1>
+    <p class="muted">The camera will record a 10 second video for liveness & recognition.</p>
+
+    <video id="auth-camera" class="video" autoplay playsinline></video>
+    <div class="row" style="margin-top:10px;">
+      <button class="btn" id="startAuthCam" type="button">Start Camera</button>
+      <button class="btn btn-primary" id="record10" type="button">Record 10s</button>
+    </div>
+
+    <div id="auth-status" class="status muted"></div>
+  </div>
+{% endblock %}

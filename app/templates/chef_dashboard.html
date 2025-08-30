@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h1 style="margin:0 0 8px 0;">Chef Dashboard</h1>
+    <p class="muted">Welcome, <strong>{{ chef_name }}</strong>! 🎉</p>
+
+    <div class="row" style="margin-top:16px;">
+      <a class="btn" href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+  </div>
+{% endblock %}
